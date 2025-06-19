@@ -17,6 +17,19 @@ The main purpose of `satellite` is to provide standard classes and methods to st
 
 The package is desinged with both flexibility and user-friendliness in mind. Think of it as the `sp-package` for remote sensing analysis. It provides core functionality and can be easily extended via packages to suit your own analysis needs. Furthermore, the fact that image bands are stored as `Raster*` objects means, that all functionality currently available for these classes will also work nicely with `satellite`.
 
+**NEW: Air Pollution Monitoring Capabilities**
+
+The `satellite` package now includes comprehensive air pollution monitoring capabilities through integration with:
+- **Sentinel-5P TROPOMI**: Access to high-resolution atmospheric trace gas measurements
+- **MODIS Atmospheric Products**: Terra/Aqua aerosol optical depth and fire data
+- **Statistical Analysis**: Advanced pollution trend analysis and quality assessment tools
+
+These new capabilities enable researchers to:
+- Download and process air pollution data from multiple satellite platforms
+- Perform comprehensive statistical analysis of air quality trends
+- Create publication-quality time series visualizations
+- Conduct exposure assessments and environmental health studies
+
 In the following, we would like to highlight some of the functionality provided by `satellite`.
 
 ## The satellite class

@@ -1,7 +1,8 @@
 #' Smorgasbord for remote sensing functions
 #'
 #' The package provides a variety of functions which are useful for 
-#' handling, manipulating and visualizing remote sensing data.
+#' handling, manipulating and visualizing remote sensing data, including
+#' comprehensive air pollution monitoring capabilities.
 #'
 #' @name satellite-package
 #' @aliases satellitepackage
@@ -21,6 +22,21 @@
 #' @references Some functions are taken and/or adopted from Sarah C. Goslee 
 #' (2011). Analyzing Remote Sensing Data in R: The landsat Package. Journal of 
 #' Statistical Software, 43(4), 1-25, \doi{10.18637/jss.v043.i04}.
+#' 
+#' @details
+#' The satellite package now includes comprehensive air pollution monitoring 
+#' capabilities through the following key functions:
+#' \itemize{
+#'   \item \code{\link{downloadSentinel5P}} - Download Sentinel-5P TROPOMI air pollution data
+#'   \item \code{\link{downloadMODISPollution}} - Download MODIS atmospheric and pollution data
+#'   \item \code{\link{processSentinel5P}} - Process Sentinel-5P NetCDF files
+#'   \item \code{\link{processMODISPollution}} - Process MODIS HDF atmospheric data
+#'   \item \code{\link{calcPollutionStats}} - Calculate comprehensive pollution statistics
+#'   \item \code{\link{plotPollutionTimeSeries}} - Create time series plots for pollution data
+#' }
+#' 
+#' These functions support analysis of major air pollutants including NO2, SO2, 
+#' CO, O3, HCHO, CH4, aerosol optical depth (AOD), and estimated PM2.5.
 #' 
 #' @keywords package
 #'

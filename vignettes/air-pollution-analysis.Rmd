@@ -1,0 +1,245 @@
+---
+title: "Air Pollution Analysis with Satellite Data"
+author: "satellite package developers"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Air Pollution Analysis with Satellite Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+The `satellite` package now includes comprehensive air pollution monitoring capabilities through integration with major satellite atmospheric datasets. This vignette demonstrates how to download, process, and analyze air pollution data from Sentinel-5P TROPOMI and MODIS atmospheric products.
+
+## Supported Platforms and Pollutants
+
+### Sentinel-5P TROPOMI
+- **Nitrogen Dioxide (NO2)**: Tropospheric and stratospheric columns
+- **Sulfur Dioxide (SO2)**: Total vertical columns  
+- **Carbon Monoxide (CO)**: Total column measurements
+- **Ozone (O3)**: Total vertical columns
+- **Formaldehyde (HCHO)**: Tropospheric columns
+- **Methane (CH4)**: Mixing ratios
+- **Aerosol Index**: UV aerosol index and layer height
+
+### MODIS Atmospheric Products  
+- **Aerosol Optical Depth (AOD)**: Terra/Aqua aerosol products
+- **Fire Data**: Active fire detections and thermal anomalies
+- **Atmospheric Parameters**: Cloud properties and water vapor
+
+## Downloading Sentinel-5P Data
+
+```{r eval=FALSE}
+library(satellite)
+
+# Download NO2 data for a specific region and time period
+no2_result <- downloadSentinel5P(
+  product = "L2__NO2___",
+  start_date = "2023-06-01", 
+  end_date = "2023-06-07",
+  bbox = c(-74.5, 40.0, -73.5, 41.0), # NYC area
+  cloud_cover = 30,
+  output_dir = "./s5p_data",
+  source = "copernicus",
+  username = "your_username",
+  password = "your_password",
+  max_results = 10
+)
+
+print(no2_result$metadata)
+```
+
+## Processing Sentinel-5P Data
+
+```{r eval=FALSE}
+# Process downloaded NetCDF files
+sat_no2 <- processSentinel5P(
+  files = no2_result$downloaded_files,
+  parameters = c("nitrogendioxide_tropospheric_column"),
+  quality_filter = TRUE,
+  quality_threshold = 0.7,
+  cloud_filter = TRUE,
+  cloud_threshold = 0.3,
+  unit_conversion = TRUE
+)
+
+# View the processed satellite object
+print(sat_no2)
+```
+
+## Downloading MODIS Atmospheric Data
+
+```{r eval=FALSE}
+# Download MODIS aerosol data
+aod_result <- downloadMODISPollution(
+  product = "MOD04_L2",
+  start_date = "2023-06-01",
+  end_date = "2023-06-07", 
+  bbox = c(-125, 30, -110, 45), # California
+  output_dir = "./modis_data",
+  source = "earthdata",
+  username = "your_nasa_username",
+  password = "your_nasa_password",
+  max_files = 20
+)
+
+# Process MODIS files
+sat_aod <- processMODISPollution(
+  files = aod_result$downloaded_files,
+  parameters = c("Optical_Depth_Land_And_Ocean", "Fine_Mode_Fraction_Ocean"),
+  quality_filter = TRUE,
+  scale_factors = TRUE,
+  mask_fill_values = TRUE
+)
+```
+
+## Statistical Analysis
+
+```{r eval=FALSE}
+# Calculate comprehensive NO2 statistics
+no2_stats <- calcPollutionStats(
+  sat_no2,
+  pollutant = "NO2",
+  temporal_analysis = TRUE,
+  spatial_analysis = TRUE,
+  exceedance_analysis = TRUE
+)
+
+# View summary statistics
+print(no2_stats$summary_stats)
+
+# Check for exceedances of air quality standards
+print(no2_stats$exceedances)
+```
+
+## Time Series Visualization
+
+```{r eval=FALSE}
+# Create time series plot with trend analysis
+no2_plot <- plotPollutionTimeSeries(
+  sat_no2,
+  pollutant = "NO2", 
+  trend_line = TRUE,
+  anomalies = TRUE,
+  aggregation = "monthly",
+  title = "NYC NO2 Trends"
+)
+
+print(no2_plot)
+
+# Plot aerosol time series
+aod_plot <- plotPollutionTimeSeries(
+  sat_aod,
+  pollutant = "AOD",
+  trend_line = TRUE,
+  seasonal = TRUE,
+  title = "California Aerosol Trends"
+)
+
+print(aod_plot)
+```
+
+## Data Quality and Validation
+
+The package includes comprehensive quality assurance capabilities:
+
+### Sentinel-5P Quality Filtering
+- **QA Values**: 0-1 scale quality indicators
+- **Cloud Filtering**: Remove cloudy pixels
+- **Retrieval Quality**: Check algorithm convergence
+- **Surface Conditions**: Account for surface albedo effects
+
+### MODIS Quality Filtering  
+- **Land/Ocean Flags**: Separate quality indicators for different surfaces
+- **Algorithm Quality**: Retrieval confidence levels
+- **Cloud Screening**: Multiple cloud detection methods
+- **Geometric Quality**: View angle and solar geometry filters
+
+## Air Quality Standards Integration
+
+The package includes WHO and EPA air quality guidelines:
+
+```{r eval=FALSE}
+# Custom thresholds for exceedance analysis
+custom_thresholds <- list(
+  NO2 = list(
+    annual_who = 10,      # µg/m³ (WHO 2021)
+    annual_epa = 53,      # µg/m³ (EPA)
+    hourly_who = 200      # µg/m³ (WHO)
+  ),
+  SO2 = list(
+    daily_who = 40,       # µg/m³ (WHO)
+    hourly_epa = 196      # µg/m³ (EPA)
+  )
+)
+
+# Apply custom thresholds
+stats_custom <- calcPollutionStats(
+  sat_no2,
+  pollutant = "NO2",
+  exceedance_analysis = TRUE,
+  thresholds = custom_thresholds$NO2
+)
+```
+
+## Example: COVID-19 Impact Analysis
+
+```{r eval=FALSE}
+# Download pre-COVID data
+pre_covid <- downloadSentinel5P(
+  product = "L2__NO2___",
+  start_date = "2019-03-01",
+  end_date = "2019-05-31",
+  bbox = c(-74.5, 40.0, -73.5, 41.0)
+)
+
+# Download COVID-period data  
+covid_period <- downloadSentinel5P(
+  product = "L2__NO2___", 
+  start_date = "2020-03-01",
+  end_date = "2020-05-31",
+  bbox = c(-74.5, 40.0, -73.5, 41.0)
+)
+
+# Process both datasets
+sat_pre <- processSentinel5P(pre_covid$downloaded_files)
+sat_covid <- processSentinel5P(covid_period$downloaded_files)
+
+# Calculate change statistics
+change_stats <- calcPollutionStats(
+  list(pre_covid = sat_pre, covid = sat_covid),
+  pollutant = "NO2",
+  temporal_analysis = TRUE
+)
+
+# Visualize the change
+comparison_plot <- plotPollutionTimeSeries(
+  list(pre_covid = sat_pre, covid = sat_covid),
+  pollutant = "NO2",
+  title = "NYC NO2: Pre-COVID vs COVID-19 Lockdown"
+)
+```
+
+## References
+
+1. Veefkind, J. P., et al. (2012). TROPOMI on the ESA Sentinel-5 Precursor. Remote sensing of environment, 120, 70-83.
+
+2. Levy, R. C., et al. (2013). The Collection 6 MODIS aerosol products over land and ocean. Atmospheric Measurement Techniques, 6(11), 2989-3034.
+
+3. WHO (2021). WHO global air quality guidelines: particulate matter (PM2.5 and PM10), ozone, nitrogen dioxide, sulfur dioxide and carbon monoxide. World Health Organization.
+
+## See Also
+
+- `?downloadSentinel5P` for detailed parameter descriptions
+- `?processSentinel5P` for processing options
+- `?calcPollutionStats` for statistical analysis capabilities
+- `?plotPollutionTimeSeries` for visualization options

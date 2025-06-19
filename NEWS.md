@@ -1,3 +1,18 @@
+# satellite 1.0.6 (Development)
+
+## New features:
+
+  * **Added comprehensive air pollution monitoring capabilities**
+  * `downloadSentinel5P()`: Download Sentinel-5P TROPOMI air pollution data (NO2, SO2, CO, O3, HCHO, CH4, aerosols)
+  * `downloadMODISPollution()`: Download MODIS atmospheric and air quality products (aerosols, fire data)
+  * `processSentinel5P()`: Process Sentinel-5P NetCDF files with quality filtering and unit conversions
+  * `processMODISPollution()`: Process MODIS HDF atmospheric data with comprehensive quality assurance
+  * `calcPollutionStats()`: Calculate comprehensive air pollution statistics with trend analysis
+  * `plotPollutionTimeSeries()`: Create publication-quality time series plots for pollution data
+  * Support for major air pollutants: NO2, SO2, CO, O3, HCHO, CH4, AOD, and estimated PM2.5
+  * Advanced quality filtering and validation for satellite air pollution data
+  * Integration with WHO and EPA air quality standards for exceedance analysis
+
 # satellite 1.0.5 (2024-02-10)
 
 Changes:

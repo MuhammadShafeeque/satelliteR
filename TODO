@@ -4,8 +4,14 @@ TODO
 Short-term
 * Cross-check vignettes
 * extent,Satellite-method?
+* Add vignettes for air pollution analysis workflows
+* Expand air pollution data validation and quality control
 
 Medium-term
 * Add Landsat Multispectral Scanner System (MSS) sensor.
-* Enable support for Global Land Survey, MODIS, WorldView-1, RapidEye, and PROBA-V (and SPOT) data.
+* Enable support for Global Land Survey, WorldView-1, RapidEye, and PROBA-V (and SPOT) data.
 * Include collection (eg MODIS V005/006, Landsat Pre-Collection 1/Collection 1), spatial resolution in 'Satellite' class.
+* Expand Sentinel-5P product support (additional atmospheric products)
+* Add support for additional MODIS atmospheric products (MOD/MYD35, MOD/MYD06)
+* Implement air pollution exposure assessment tools
+* Add support for ground-based air quality station data integration
